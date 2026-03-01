@@ -1,0 +1,28 @@
+# wk
+# Node
+**/node_modules/
+**/dist/
+**/.vite/
+**/coverage/
+**/*.log
+
+# Java / Maven / Spring
+**/target/
+**/*.class
+backend/data/
+**/*.h2.db
+**/*.mv.db
+**/*.trace.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
