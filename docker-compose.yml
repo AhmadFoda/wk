@@ -1,0 +1,30 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "9090:8080"
+    volumes:
+      - h2data:/data
+    networks: [appnet]
+
+  proxy:
+    build: ./proxy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "https://accounts.google.com"
+    depends_on: [backend]
+    networks: [appnet]
+
+  client:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on: [proxy]
+    networks: [appnet]
+
+volumes:
+  h2data:
+
+networks:
+  appnet:
