@@ -1,4 +1,4 @@
-package validator;
+package com.wolterskluwer.backend.validator;
 
 import org.springframework.stereotype.Component;
 

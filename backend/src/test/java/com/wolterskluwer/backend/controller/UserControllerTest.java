@@ -83,7 +83,7 @@ class UserControllerTest {
 
         mockMvc.perform(get("/api/v1/user/organisations")
                         .with(jwt().jwt(jwt -> jwt.subject(subjectId))))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("User Org"))
@@ -127,7 +127,7 @@ class UserControllerTest {
 
         mockMvc.perform(get("/api/v1/user/organisations")
                         .with(jwt().jwt(jwt -> jwt.subject(subjectId))))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
     }

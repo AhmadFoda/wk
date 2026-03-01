@@ -29,7 +29,7 @@ public class UserController {
 
     @GetMapping("/organisations")
     public ResponseEntity<List<OrganisationDTO>> getUserOrganisation(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.accepted().body(organisationService.getUserOrganisation(jwt.getSubject()));
+        return ResponseEntity.ok().body(organisationService.getUserOrganisation(jwt.getSubject()));
     }
 
 

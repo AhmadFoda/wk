@@ -67,7 +67,7 @@ class OrganisationControllerTest {
 
         mockMvc.perform(get("/api/v1/user/organisations")
                         .with(jwt().jwt(jwt -> jwt.subject("user123"))))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("Test Org"))
