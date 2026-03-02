@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wolterskluwer.backend.dto.CredentialsResponse;
 import com.wolterskluwer.backend.exception.ForbiddenOperationException;
 import com.wolterskluwer.backend.model.Credentials;
+import com.wolterskluwer.backend.security.EncryptionService;
 import com.wolterskluwer.backend.service.CredentialsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,10 +45,13 @@ class CredentialsControllerTest {
     @MockitoBean
     private CredentialsService credentialsService;
 
+    @MockitoBean
+    EncryptionService encryptionService;
+
     @Test
     @DisplayName("Should create credentials successfully")
     void shouldCreateCredentialsSuccessfully() throws Exception {
-        
+
         Long orgId = 1L;
         Instant expiresAt = Instant.now().plus(30, ChronoUnit.DAYS);
 

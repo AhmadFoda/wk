@@ -13,6 +13,7 @@ import com.wolterskluwer.backend.service.SecretGenerationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.wolterskluwer.backend.security.EncryptionService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,6 +29,8 @@ public class CredentialsServiceImplementation implements CredentialsService {
     private final SecretGenerationService secretGenerationService;
 
     private final CredentialsValidationService credentialsValidationService;
+
+    private final EncryptionService encryptionService;
 
     @Override
     public CredentialsResponse createCredentials(String subjectId, long organisationId, Instant expiresAt) {
@@ -47,19 +50,22 @@ public class CredentialsServiceImplementation implements CredentialsService {
     public CredentialsResponse updateCredentials(String subjectId, long organisationId, Instant expiresAt) {
         final Credentials credentials = getCredentialsBySubjectIdAndOrgId(subjectId, organisationId);
         if (credentials == null) throw new ForbiddenOperationException("Credentials not found");
-        credentials.setClientSecret(secretGenerationService.generateSecret());
-        credentials.setExpirationDate(getExpirationDate(expiresAt));
+        final String clientSecret = secretGenerationService.generateSecret();
+        final Instant expirationDate = getExpirationDate(expiresAt);
+        credentials.setClientSecret(encryptionService.encrypt(clientSecret));
+        credentials.setExpirationDate(expirationDate);
         credentialsRepository.save(credentials);
-        return new CredentialsResponse(credentials.getId(), credentials.getClientId(), credentials.getClientSecret(), getExpirationDate(expiresAt), credentials.getStatus());
+        return new CredentialsResponse(credentials.getId(), credentials.getClientId(), clientSecret, expirationDate, credentials.getStatus());
     }
 
     private CredentialsResponse getNewCredentials(long organisationId, Instant expiresAt, User user) {
         if (credentialsRepository.existsActiveByClientIdAndOrganisationId(user.getClientId(), organisationId))
             throw new ForbiddenOperationException("Credentials already exist.");
-        Credentials credentials = new Credentials(user.getClientId(), secretGenerationService.generateSecret(), Instant.now(), expiresAt, Credentials.CredentialsStatus.ACTIVE);
+        final String clientSecret = secretGenerationService.generateSecret();
+        Credentials credentials = new Credentials(user.getClientId(), encryptionService.encrypt(clientSecret), Instant.now(), expiresAt, Credentials.CredentialsStatus.ACTIVE);
         credentials.setOrganization(organisationsRepository.findById(organisationId).orElseThrow(() -> new ForbiddenOperationException("Organisation not found")));
         credentialsRepository.save(credentials);
-        return new CredentialsResponse(credentials.getId(), credentials.getClientId(), credentials.getClientSecret(), getExpirationDate(expiresAt), credentials.getStatus());
+        return new CredentialsResponse(credentials.getId(), credentials.getClientId(), clientSecret, getExpirationDate(expiresAt), credentials.getStatus());
     }
 
     @Override

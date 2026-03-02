@@ -15,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import com.wolterskluwer.backend.security.EncryptionService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -44,6 +46,9 @@ class CredentialsServiceImplementationTest {
     @InjectMocks
     private CredentialsServiceImplementation service;
 
+    @Mock
+    private EncryptionService encryptionService;
+
     @Test
     @DisplayName("Should create credentials when user is member of organisation")
     void shouldCreateCredentialsSuccessfully() {
@@ -54,7 +59,7 @@ class CredentialsServiceImplementationTest {
         User user = new User(subjectId, "Ahmed", "Hamed", "ahmed@example.com", "client123");
         Organisation organisation = new Organisation();
         organisation.setName("Test Org");
-        
+
 
         when(validationService.validateUserAccess(subjectId, orgId)).thenReturn(user);
         when(validationService.isExpirationDateValid(expiresAt)).thenReturn(true);

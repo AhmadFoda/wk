@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import com.wolterskluwer.backend.security.EncryptionService;
 
 import java.util.List;
 
@@ -34,6 +35,9 @@ class OrganisationControllerTest {
 
     @MockitoBean
     private OrganisationService organisationService;
+
+    @MockitoBean
+    private EncryptionService encryptionService;
 
     @Test
     @DisplayName("Should get all organisations successfully")
